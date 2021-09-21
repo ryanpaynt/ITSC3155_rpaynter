@@ -12,8 +12,13 @@
 
 def count_threes(n):
   # YOUR CODE HERE
-
-  return
+  c = 0;
+  for i in range(0,n):
+    if(n < 3):
+      return 0;
+    if(i % 3 == 0):
+      c = c+1;
+  return c;
 
 
 # Part B. longest_consecutive_repeating_char
