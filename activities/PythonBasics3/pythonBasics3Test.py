@@ -26,7 +26,7 @@ class TestPythonBasicsOne(unittest.TestCase):
 
         self.assertEqual(pythonBasics3.multiple_words(" "), False)
 
-        self.assertEqual(pythonBasics3.multiple_words("Different\\twhitespace"), False)
+        self.assertEqual(pythonBasics3.multiple_words("Different\\\twhitespace"), False)
 
         self.assertEqual(pythonBasics3.multiple_words("It's-all-one-word"), False)
 
