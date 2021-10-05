@@ -6,19 +6,35 @@
 
 
 # Part A. count_threes
-# Define a function count_threes(n) that takes an int and
-# returns the number of multiples of 3 in the range from 0
-# to n (including n).
+# Define a function count_threes(n) that takes a string of numbers
+# and updates the dictionary to show which multiple of three occurs
+# the most. That multiple is returned.
 
 def count_threes(n):
   # YOUR CODE HERE
-  c = 0;
-  for i in range(0,n):
-    if(n < 3):
-      return 0;
-    if(i % 3 == 0):
-      c = c+1;
-  return c;
+  n = list(n)
+  three_count = dict([
+    (3,0),
+    (6,0),
+    (9,0)
+  ])
+
+  for i in range(len(n)):
+    if(int(n[i]) == 0):
+      print()
+    elif(int(n[i]) % 9 == 0):
+      three_count[9] += 1
+    elif(int(n[i]) % 6 == 0):
+      three_count[6] += 1
+    elif(int(n[i]) % 3 == 0):
+      three_count[3] += 1
+  max_val = -1
+  ind = -1
+  for key, value in three_count.items():
+    if max_val < value:
+      max_val = value
+      ind = key
+  return ind
 
 
 # Part B. longest_consecutive_repeating_char
@@ -26,15 +42,26 @@ def count_threes(n):
 # a string s and returns the character that has the longest consecutive repeat.
 def longest_consecutive_repeating_char(s):
   # YOUR CODE HERE
+  chars = dict([])
   letter = ''
   count = 0
   for i in range(0, len(s)-1):
     if(s[i] == s[i+1]):
       count += 1
       letter = s[i]
+      chars.update({letter:count})
     else:
       count = 0
-  return letter
+
+  ch_arr = []
+  all_values = chars.values()
+  max_val = max(all_values)
+  for key, value in chars.items():
+    if max_val == value:
+      ch_arr.append(key)
+  return ch_arr
+  print(chars.items())
+  print(ch_arr)
 
 
 # Part C. is_palindrome
