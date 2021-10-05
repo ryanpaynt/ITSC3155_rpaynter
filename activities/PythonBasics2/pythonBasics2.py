@@ -39,7 +39,8 @@ def count_threes(n):
 
 # Part B. longest_consecutive_repeating_char
 # Define a function longest_consecutive_repeating_char(s) that takes
-# a string s and returns the character that has the longest consecutive repeat.
+# a string s and inputs it into a dictionary. Where each value is compared
+# to the maximum value and inserted into an array. This array is outputted
 def longest_consecutive_repeating_char(s):
   # YOUR CODE HERE
   chars = dict([])
