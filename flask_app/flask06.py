@@ -4,19 +4,25 @@
 import os
 import re                 # os is used to get environment variables IP & PORT
 from flask import Flask   # Flask is the web app that we will customize
+from flask import session
 from flask import render_template
 from flask import request
 from flask import redirect, url_for
 from database import db
 from models import Note as Note
 from models import User as User
+from forms import RegisterForm
+from logging import FileHandler,WARNING
+import bcrypt
 
 app = Flask(__name__)     # create an app
-
+file_handler = FileHandler('errorlog.txt')
+file_handler.setLevel(WARNING)
 # @app.route is a decorator. It gives the function "index" special powers.
 # In this case it makes it so anyone going to "your-url/" makes this function
 # get called. What it returns is what is shown as the web page
 
+app.config['SECRET_KEY'] = 'SE3155'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flask_note_app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 #  Bind SQLAlchemy db object to this Flask app
@@ -33,13 +39,43 @@ def index():
     return render_template("index.html", user=a_user)
 
 
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    form = RegisterForm()
+
+    if request.method == 'POST' and form.validate_on_submit():
+        # salt and hash password
+        h_password = bcrypt.hashpw(
+            request.form['password'].encode('utf-8'), bcrypt.gensalt())
+        # get entered user data
+        first_name = request.form['firstname']
+        last_name = request.form['lastname']
+        # create user model
+        new_user = User(first_name, last_name,
+                        request.form['email'], h_password)
+        # add user to database and commit
+        db.session.add(new_user)
+        db.session.commit()
+        # save the user's name to the session
+        session['user'] = first_name
+        # access id value from user model of this newly added user
+        session['user_id'] = new_user.id
+        # show user dashboard view
+        return redirect(url_for('get_notes'))
+
+    # something went wrong - display register view
+    return render_template('register.html', form=form)
+
+
 @app.route('/notes')
 def get_notes():
-    a_user = db.session.query(User).filter_by(email='rpaynter@uncc.edu').one()
 
-    my_notes = db.session.query(Note).all()
+    if session.get('user'):
+        my_notes = db.session.query(Note).filter_by(user_id=session['user_id']).all()
 
-    return render_template('notes.html', notes=my_notes, user=a_user)
+        return render_template('notes.html', notes=my_notes, user=session['user'])
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/notes/<note_id>')
