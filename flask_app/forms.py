@@ -32,6 +32,13 @@ class RegisterForm(FlaskForm):
         if db.session.query(User).filter_by(email=field.data).count() != 0:
             raise ValidationError('Username already in use.')
 
+class CommentForm(FlaskForm):
+    class Meta:
+        csrf = False
+
+    comment = TextAreaField('Comment',validators=[Length(min=1)])
+
+    submit = SubmitField('Add Comment')
 
 class LoginForm(FlaskForm):
     class Meta:
