@@ -16,6 +16,8 @@ app = Flask(__name__)     # create an app
 # @app.route is a decorator. It gives the function "index" special powers.
 # In this case it makes it so anyone going to "your-url/" makes this function
 # get called. What it returns is what is shown as the web page
+if __name__ == '__main__':
+    app.run(debug = True)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flask_note_app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
